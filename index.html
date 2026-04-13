@@ -902,7 +902,8 @@
                     style="width:100%; object-fit:contain;" alt="DAV"></div>
             <div class="chat-header-info">
                 <strong>DAV VisTra</strong>
-                <span>● Online <span id="chatTimerDisplay" style="color:#EF4444;font-weight:600;display:none;"></span></span>
+                <span>● Online <span id="chatTimerDisplay"
+                        style="color:#EF4444;font-weight:600;display:none;"></span></span>
             </div>
             <button class="chat-close" onclick="toggleChat()" title="Close chat" aria-label="Close chat">
                 <i class="fas fa-times"></i>
@@ -1324,25 +1325,25 @@
                 gTimer.style.cssText = 'position:fixed; top:80px; right:20px; background:white; color:var(--maroon); padding:12px 20px; border-radius:12px; font-weight:bold; box-shadow:0 10px 30px rgba(139,26,26,0.15); border: 2px solid var(--maroon); z-index:9999; display:flex; align-items:center; gap:12px; font-size:16px; animation: slideIn 0.3s ease-out forwards;';
                 gTimer.innerHTML = `<i class="fas fa-hourglass-half fa-spin-pulse" style="color:var(--maroon);"></i> <div><div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; line-height:1;">Pass Expires In</div><div id="globalTimerText" style="line-height:1.2; font-size:18px;">--:--</div></div>`;
                 document.body.appendChild(gTimer);
-                
+
                 // Add keyframes if not exists
                 if (!document.getElementById("timerStyles")) {
-                     const style = document.createElement("style");
-                     style.id = "timerStyles";
-                     style.innerHTML = `@keyframes slideIn { from{transform:translateX(100px);opacity:0;} to{transform:translateX(0);opacity:1;} }`;
-                     document.head.appendChild(style);
+                    const style = document.createElement("style");
+                    style.id = "timerStyles";
+                    style.innerHTML = `@keyframes slideIn { from{transform:translateX(100px);opacity:0;} to{transform:translateX(0);opacity:1;} }`;
+                    document.head.appendChild(style);
                 }
             }
 
             if (diff <= 0) {
                 if (display) display.innerText = "· EXPIRED";
                 if (gTimer) gTimer.innerHTML = `<i class="fas fa-times-circle"></i> <div><div style="font-size:11px; color:#EF4444; text-transform:uppercase; letter-spacing:1px; line-height:1;">Pass Status</div><div style="line-height:1.2; font-size:18px; color:#EF4444;">EXPIRED</div></div>`;
-                
+
                 clearInterval(chatTimerInterval);
                 clearInterval(pollInterval);
-                
+
                 // Update backend status to EXPIRED using PATCH
-                fetch(`https://1ccf-2409-40d1-149f-2398-2534-f9a2-4cab-d141.ngrok-free.app/api/visitors/status/${activePin}`, {
+                fetch(`https://e8ff-2401-4900-858a-ff8c-794e-14a5-6da9-adeb.ngrok-free.app/api/visitors/status/${activePin}`, {
                     method: "PATCH",
                     headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' },
                     body: JSON.stringify({ status: "EXPIRED" })
@@ -1355,14 +1356,14 @@
             const hrs = Math.floor(diff / 3600000);
             const mins = Math.floor((diff % 3600000) / 60000);
             const secs = Math.floor((diff % 60000) / 1000);
-            
+
             let timeString = `${hrs}h ${mins}m ${secs}s`;
             if (hrs === 0) {
                 timeString = `${mins}m ${secs}s`; // Optional: Keep it clean if under 1 hr, or keep 0h? Let's show hrs always or if user wants it:
                 // Actually they requested hrs,mins,secs, let's keep it strictly visible!
                 timeString = `${hrs}h ${mins}m ${secs}s`;
             }
-            
+
             if (display) display.innerText = `· ${timeString} left`;
             const globalText = document.getElementById("globalTimerText");
             if (globalText) globalText.innerText = timeString;
@@ -1371,13 +1372,13 @@
         async function pollVisitorPath() {
             if (!activePin) return;
             try {
-                const response = await fetch(`https://1ccf-2409-40d1-149f-2398-2534-f9a2-4cab-d141.ngrok-free.app/api/visitors/pin/${activePin}`, {
+                const response = await fetch(`https://e8ff-2401-4900-858a-ff8c-794e-14a5-6da9-adeb.ngrok-free.app/api/visitors/pin/${activePin}`, {
                     headers: { 'ngrok-skip-browser-warning': '69420' }
                 });
                 if (response.ok) {
                     const data = await response.json();
                     let visitor = data.data || data.visitor || data;
-                    
+
                     let currentLoc = visitor.currentStation;
                     if (visitor.path && Array.isArray(visitor.path) && visitor.path.length > 0) {
                         const lastItem = visitor.path[visitor.path.length - 1];
@@ -1396,14 +1397,14 @@
 
         function startVisitorSession(visitor, pin) {
             activePin = pin;
-            
+
             let currentLoc = visitor.currentStation || "Reception";
             if (visitor.path && Array.isArray(visitor.path) && visitor.path.length > 0) {
                 const lastItem = visitor.path[visitor.path.length - 1];
                 currentLoc = typeof lastItem === 'object' ? lastItem.location : lastItem;
             }
             lastStation = currentLoc;
-            
+
             if (visitor.expiresAt) {
                 visitorExpiresAt = new Date(visitor.expiresAt).getTime();
                 if (!isNaN(visitorExpiresAt)) {
@@ -1445,7 +1446,7 @@
             if (chatAuthState === "AWAITING_PIN") {
                 const pin = question.trim();
                 try {
-                    const response = await fetch(`https://1ccf-2409-40d1-149f-2398-2534-f9a2-4cab-d141.ngrok-free.app/api/visitors/pin/${pin}`, {
+                    const response = await fetch(`https://e8ff-2401-4900-858a-ff8c-794e-14a5-6da9-adeb.ngrok-free.app/api/visitors/pin/${pin}`, {
                         headers: {
                             'ngrok-skip-browser-warning': '69420'
                         }
