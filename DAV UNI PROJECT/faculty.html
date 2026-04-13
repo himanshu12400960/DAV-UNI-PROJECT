@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAV Faculty Queue Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&family=Great+Vibes&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ─── RESET & ROOT ───────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            /* DAV Brand */
+            --red: #CC0000;
+            --maroon: #8B1A1A;
+            --maroon-light: #A82828;
+            --gold: #B8882A;
+            --gold-light: #D4A84B;
+
+            /* Surface */
+            --bg: #F9F6F3;
+            --panel-bg: rgba(255, 253, 250, 0.85);
+            --panel-border: rgba(139, 26, 26, 0.11);
+
+            /* Text */
+            --text-main: #1A1210;
+            --text-muted: #6A5D58;
+
+            --transition: 0.28s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+            /* Compatibility */
+            --blue-main: var(--maroon);
+            --blue-accent: var(--gold);
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: var(--bg);
+            position: relative;
+        }
+
+        /* Subtle warm orbs */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+            filter: blur(120px);
+        }
+
+        body::before {
+            width: 700px;
+            height: 700px;
+            background: rgba(123, 26, 26, 0.07);
+            top: -200px;
+            left: -200px;
+        }
+
+        body::after {
+            width: 500px;
+            height: 500px;
+            background: rgba(184, 136, 42, 0.08);
+            bottom: -150px;
+            right: -150px;
+        }
+
+        /* ─── GLOBAL LOGIN OVERLAY ───────────────────────── */
+        .faculty-login-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(249, 246, 243, 0.82);
+            backdrop-filter: blur(32px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 48px;
+            border-radius: 24px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 440px;
+            border: 1px solid var(--panel-border);
+            text-align: center;
+        }
+
+        .login-card img {
+            height: 60px;
+            margin-bottom: 24px;
+        }
+
+        .login-card h2 {
+            color: var(--blue-main);
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        .login-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .login-input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .login-input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .login-input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .login-input-group input:focus {
+            border-color: var(--maroon);
+            box-shadow: 0 0 0 4px rgba(139, 26, 26, 0.08);
+        }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            padding-right: 48px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 18px;
+            padding: 4px;
+        }
+
+        .toggle-password:hover {
+            color: var(--maroon);
+        }
+
+        .pin-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .pin-wrapper .toggle-password {
+            right: 20px;
+            top: 50%;
+            transform: translateY(-80%);
+            /* Adjusted for large PIN input */
+        }
+
+        .login-btn {
+            background: var(--maroon);
+            color: white;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 8px;
+        }
+
+        .login-btn:hover {
+            background: var(--maroon-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 26, 26, 0.3);
+        }
+
+        #loginError {
+            color: #EF4444;
+            font-size: 13px;
+            margin-top: 16px;
+            font-weight: 500;
+            display: none;
+        }
+
+        /* ─── NAV ───────────────────────── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 48px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid var(--panel-border);
+            box-shadow: 0 1px 20px rgba(123, 26, 26, 0.06);
+        }
+
+        /* Logo pair in nav */
+        .nav-logos {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-logos img {
+            display: block;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .nav-logos .logo-crest {
+            width: clamp(38px, 6vw, 54px);
+            filter: drop-shadow(0 2px 6px rgba(139, 26, 26, 0.15));
+        }
+
+        .nav-logos .logo-text {
+            width: clamp(110px, 18vw, 170px);
+            max-height: 44px;
+        }
+
+        .nav-logo-divider {
+            width: 1px;
+            height: 32px;
+            background: var(--panel-border);
+            flex-shrink: 0;
+        }
+
+        .nav-station-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(123, 26, 26, 0.07);
+            color: var(--maroon);
+            font-weight: 700;
+            font-size: 14px;
+            border: 1px solid var(--panel-border);
+        }
+
+        /* ─── LAYOUT ───────────────────────── */
+        .layout {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 32px;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--panel-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: var(--maroon);
+            border-bottom: 1px solid rgba(139, 26, 26, 0.1);
+            padding-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ─── QUEUE LIST ───────────────────────── */
+        .queue-container {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 60vh;
+            padding-right: 8px;
+        }
+
+        .queue-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .queue-container::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+
+        .queue-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--panel-border);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .queue-item:hover {
+            background: rgba(139, 26, 26, 0.04);
+            transform: translateY(-2px);
+            border-color: var(--maroon);
+        }
+
+        .queue-item .q-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748B;
+            overflow: hidden;
+        }
+
+        .q-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .q-info h4 {
+            font-size: 15px;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .q-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .empty-queue {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* ─── PROFILE DISPLAY ───────────────────────── */
+        .profile-wrapper {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 16px;
+        }
+
+        .visitor-photo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(139, 26, 26, 0.1);
+        }
+
+        .info-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            width: 100%;
+            padding: 12px 0;
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .tag-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 20px;
+            background: rgba(139, 26, 26, 0.08);
+            color: var(--maroon);
+            border: 1px solid rgba(139, 26, 26, 0.15);
+        }
+
+        /* ─── ROUTING ACTIONS ───────────────────────── */
+        .routing-box {
+            margin-top: 24px;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            border: 1px solid var(--panel-border);
+            text-align: left;
+            width: 100%;
+        }
+
+        .routing-box label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--maroon);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        /* ─── ELITE SELECT (SYNCED WITH REGISTER) ─── */
+        .elite-select-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .elite-select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--panel-border);
+            background: #fff;
+            color: var(--text-main);
+            font-size: 14.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .elite-select:hover {
+            border-color: var(--maroon);
+        }
+
+        .elite-select.open {
+            border-color: var(--maroon);
+            box-shadow: 0 0 0 4px rgba(139, 26, 26, 0.08);
+        }
+
+        .elite-select::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238B1A1A'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
+            transition: 0.3s;
+        }
+
+        .elite-select.open::after {
+            transform: rotate(180deg);
+        }
+
+        .elite-options {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 1000;
+        }
+
+        .elite-options.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .elite-option {
+            padding: 12px 16px;
+            font-size: 14.5px;
+            color: var(--text-main);
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .elite-option:hover {
+            background: rgba(139, 26, 26, 0.06);
+            color: var(--maroon);
+            padding-left: 20px;
+        }
+
+        .hidden-select {
+            display: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-proceed {
+            flex: 2;
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-proceed:hover {
+            background: #059669;
+        }
+
+        .btn-exit {
+            flex: 1;
+            background: #EF4444;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-exit:hover {
+            background: #DC2626;
+        }
+
+        /* ─── PIN OVERLAY ───────────────────────── */
+        .pin-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        .pin-overlay.active {
+            display: flex;
+        }
+
+        .pin-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .pin-input {
+            width: 100%;
+            font-size: 32px;
+            letter-spacing: 12px;
+            text-align: center;
+            padding: 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            background: #F8FAFC;
+            color: var(--text-main);
+            font-weight: 700;
+            outline: none;
+            margin-bottom: 24px;
+        }
+
+        .pin-input:focus {
+            border-color: var(--maroon);
+        }
+
+        .pin-box-btn {
+            background: var(--maroon);
+            color: white;
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .pin-box-cancel {
+            background: transparent;
+            color: var(--text-muted);
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1. FACULTY LOGIN OVERLAY -->
+    <div id="facultyLoginOverlay" class="faculty-login-overlay">
+        <div class="login-card">
+            <img src="https://davuniversity.org/src2/img/basic/logohead.png?v=1" alt="DAV">
+            <h2>Faculty Portal</h2>
+            <p>Secure login to access departmental queues.</p>
+
+            <form onsubmit="handleFacultyLogin(event)">
+                <div class="login-input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="facultyUser" placeholder="e.g. faculty@davuniversity.org" autocomplete="off"
+                        required>
+                </div>
+                <div class="login-input-group">
+                    <label>Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="facultyPass" placeholder="••••••••" required>
+                        <i class="fas fa-eye toggle-password"
+                            onclick="togglePasswordVisibility('facultyPass', this)"></i>
+                    </div>
+                </div>
+                <button type="submit" class="login-btn">Secure Login</button>
+                <p id="loginError"><i class="fas fa-exclamation-triangle"></i> Incorrect Email or Password</p>
+
+                <div
+                    style="margin-top: 24px; font-size: 12px; color: var(--text-muted); opacity: 0.8; text-align: center;">
+                    <strong>Notice:</strong> Please log in using your official university credentials.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. NAV (Hidden until login) -->
+    <nav id="topNav" style="display: none;">
+        <div class="nav-logos">
+            <img src="https://davuniversity.org/src2/img/basic/logohead.png?v=1" class="logo-crest" alt="DAV Crest">
+            <div class="nav-logo-divider"></div>
+            <img src="https://davuniversity.org/src2/img/basic/DAVU.png?v=1" class="logo-text" alt="DAV University">
+        </div>
+        <div class="nav-station-badge" id="navStationName">
+            <i class="fas fa-id-badge"></i> Loading Station...
+        </div>
+    </nav>
+
+    <!-- 3. DASHBOARD MAIN (Hidden until login) -->
+    <main class="layout" id="mainDashboard" style="display: none;">
+
+        <!-- WAITING QUEUE PANEL -->
+        <div class="panel">
+            <h2>Waiting Queue <span id="queueCount"
+                    style="background: var(--blue-accent); color: white; padding: 2px 10px; border-radius: 12px; font-size: 13px;">0</span>
+            </h2>
+            <div class="queue-container" id="queueList">
+                <!-- Queue items generated via JS -->
+            </div>
+        </div>
+
+        <!-- VISITOR VERIFICATION PANEL -->
+        <div class="panel" style="position: relative;">
+            <h2>Visitor Profile / Routing</h2>
+
+            <div id="noVisitorState"
+                style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted);">
+                <i class="fas fa-id-card-clip" style="font-size: 48px; opacity: 0.2; margin-bottom: 16px;"></i>
+                <p>Select a visitor from the queue and verify their PIN.</p>
+            </div>
+
+            <div id="activeVisitorState" class="profile-wrapper">
+                <img id="visPhoto" src="" alt="Visitor Photo" class="visitor-photo" style="display:none;">
+                <div class="tag-badge" id="visPurpose">--</div>
+
+                <div class="info-row"><span class="info-label">Full Name</span><span class="info-value"
+                        id="visName">--</span></div>
+                <div class="info-row"><span class="info-label">Contact</span><span class="info-value"
+                        id="visContact">--</span></div>
+                <div class="info-row"><span class="info-label">Registered Details</span><span class="info-value"
+                        id="visEmail">--</span></div>
+
+                <!-- ROUTING ACTION BOX -->
+                <div class="routing-box">
+                    <label>Route to Next Station</label>
+                    <div class="elite-select-wrapper">
+                        <div class="elite-select" id="nextStationDisplay"
+                            onclick="toggleEliteSelect('nextStationOptions')">
+                            Select Next Station...
+                        </div>
+                        <div class="elite-options" id="nextStationOptions">
+                            <div class="elite-option"
+                                onclick="selectEliteOption(event, 'nextStation', 'Reception', 'Reception', 'nextStationDisplay', 'nextStationOptions')">
+                                Reception</div>
+                            <div class="elite-option"
+                                onclick="selectEliteOption(event, 'nextStation', 'Admission Cell', 'Admission Cell', 'nextStationDisplay', 'nextStationOptions')">
+                                Admission Cell</div>
+                            <div class="elite-option"
+                                onclick="selectEliteOption(event, 'nextStation', 'Document Verification', 'Document Verification', 'nextStationDisplay', 'nextStationOptions')">
+                                Document Verification</div>
+                            <div class="elite-option"
+                                onclick="selectEliteOption(event, 'nextStation', 'Counselling', 'Counselling', 'nextStationDisplay', 'nextStationOptions')">
+                                Counselling</div>
+                            <div class="elite-option"
+                                onclick="selectEliteOption(event, 'nextStation', 'Accounts', 'Accounts / Fee', 'nextStationDisplay', 'nextStationOptions')">
+                                Accounts / Fee</div>
+                            <div class="elite-option"
+                                onclick="selectEliteOption(event, 'nextStation', 'Hostel Warden', 'Hostel Warden', 'nextStationDisplay', 'nextStationOptions')">
+                                Hostel Warden</div>
+                        </div>
+                        <select id="nextStation" class="hidden-select">
+                            <option value="">Select Station...</option>
+                            <option value="Reception">Reception</option>
+                            <option value="Admission Cell">Admission Cell</option>
+                            <option value="Document Verification">Document Verification</option>
+                            <option value="Counselling">Counselling</option>
+                            <option value="Accounts">Accounts</option>
+                            <option value="Hostel Warden">Hostel Warden</option>
+                        </select>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-proceed" onclick="proceedVisitor()"><i class="fas fa-share"></i> Route to
+                            Queue</button>
+                        <button class="btn-exit" onclick="exitVisitor()"><i class="fas fa-sign-out-alt"></i>
+                            Exit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- VERIFY PIN POPUP -->
+    <div id="pinOverlay" class="pin-overlay">
+        <div class="pin-box">
+            <h2>Verify Visitor PIN</h2>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Ask the visitor for their 6-digit
+                security PIN to access their dashboard.</p>
+            <div class="pin-wrapper">
+                <input type="password" id="inputPin" class="pin-input" maxlength="6" placeholder="••••••">
+                <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('inputPin', this)"></i>
+            </div>
+            <button class="pin-box-btn" onclick="submitPin()">Verify & Unlock</button>
+            <button class="pin-box-cancel" onclick="closePinOverlay()">Cancel</button>
+            <p id="pinError" style="color: #EF4444; margin-top: 12px; font-size: 13px; display: none;">Incorrect PIN
+                match.</p>
+        </div>
+    </div>
+
+    <script>
+        // ── AUTHENTICATION ──
+        function togglePasswordVisibility(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        // ── ELITE SELECT LOGIC ──────────────────────────────────────
+        function toggleEliteSelect(id) {
+            const menu = document.getElementById(id);
+            const trigger = menu.previousElementSibling;
+            const isOpen = menu.classList.contains('show');
+
+            // Close all other dropdowns
+            document.querySelectorAll('.elite-options').forEach(o => o.classList.remove('show'));
+            document.querySelectorAll('.elite-select').forEach(o => o.classList.remove('open'));
+
+            if (!isOpen) {
+                menu.classList.add('show');
+                trigger.classList.add('open');
+            }
+        }
+
+        function selectEliteOption(event, hiddenId, val, text, displayId, menuId) {
+            if (event) {
+                event.stopPropagation();
+            }
+            document.getElementById(hiddenId).value = val;
+            const display = document.getElementById(displayId);
+            display.innerText = text;
+            display.style.color = "var(--maroon)";
+            display.style.fontWeight = "600";
+
+            document.getElementById(menuId).classList.remove('show');
+            display.classList.remove('open');
+        }
+
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.elite-select-wrapper')) {
+                document.querySelectorAll('.elite-options').forEach(o => o.classList.remove('show'));
+                document.querySelectorAll('.elite-select').forEach(o => o.classList.remove('open'));
+            }
+        });
+
+        // Current user session
+        let myStation = null;
+
+        // --- FACULTY LOGIN AP WORKFLOW ---
+        async function handleFacultyLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById("facultyUser").value.trim();
+            const pass = document.getElementById("facultyPass").value.trim();
+            const loginBtn = document.querySelector("#facultyLoginOverlay button[type='submit']");
+
+            const origText = loginBtn.innerHTML;
+            loginBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Authenticating...`;
+            loginBtn.disabled = true;
+            document.getElementById("loginError").style.display = "none";
+
+            try {
+                const response = await fetch("https://1ccf-2409-40d1-149f-2398-2534-f9a2-4cab-d141.ngrok-free.app/api/faculty/login", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' },
+                    body: JSON.stringify({ email: email, password: pass })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Invalid credentials");
+                }
+
+                const data = await response.json();
+
+                // Fallback extraction mapping for assigned station
+                myStation = data.station || data.department || data.data?.station || data.data?.department || data.faculty?.station || data.faculty?.department || "Reception";
+
+                // Success! Set station
+                document.getElementById("facultyLoginOverlay").style.display = "none";
+                document.getElementById("topNav").style.display = "flex";
+                document.getElementById("mainDashboard").style.display = "grid";
+
+                document.getElementById("navStationName").innerHTML = `<i class="fas fa-id-badge"></i> ${myStation} Dashboard`;
+
+                // Initiate Queue tracking
+                renderQueue();
+                setInterval(renderQueue, 10000);
+
+            } catch (error) {
+                document.getElementById("loginError").style.display = "block";
+            } finally {
+                loginBtn.innerHTML = origText;
+                loginBtn.disabled = false;
+            }
+        }
+
+        // --- 3. QUEUE LOGIC ---
+        let currentQueue = [];
+        let selectedVisitorIndex = -1;
+
+        async function loadQueue() {
+            try {
+                const response = await fetch("https://1ccf-2409-40d1-149f-2398-2534-f9a2-4cab-d141.ngrok-free.app/api/visitors/", {
+                    headers: { 'ngrok-skip-browser-warning': '69420' }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    let list = data;
+                    if (data.data) list = data.data;
+                    if (data.visitors) list = data.visitors;
+                    currentQueue = Array.isArray(list) ? list : [];
+                } else {
+                    currentQueue = [];
+                }
+            } catch (e) {
+                console.error("API fetch failed, falling back to local storage.", e);
+                try {
+                    const dataStr = localStorage.getItem("davQueue");
+                    currentQueue = dataStr ? JSON.parse(dataStr) : [];
+                } catch (err) {
+                    currentQueue = [];
+                }
+            }
+        }
+
+        async function renderQueue() {
+            if (!myStation) return; // Prevent render if not logged in
+
+            await loadQueue();
+            const queueListEl = document.getElementById("queueList");
+            const countEl = document.getElementById("queueCount");
+
+            queueListEl.innerHTML = "";
+            let count = 0;
+
+            // Sort queue by timestamp (oldest first)
+            currentQueue.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+            currentQueue.forEach((visitor, index) => {
+                count++;
+                const date = new Date(visitor.timestamp);
+                const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                const item = document.createElement("div");
+                item.className = "queue-item";
+                item.onclick = () => openPinOverlay(index, visitor.name);
+
+                let avatarHtml = `<div class="q-avatar"><i class="fas fa-user"></i></div>`;
+                if (visitor.photo) {
+                    avatarHtml = `<div class="q-avatar"><img src="${visitor.photo}" alt="img"></div>`;
+                }
+
+                item.innerHTML = `
+                    ${avatarHtml}
+                    <div class="q-info">
+                        <h4>${visitor.name}</h4>
+                        <p>${visitor.purpose} • Wait since ${timeStr} • At: ${visitor.currentStation || 'Reception'}</p>
+                    </div>
+                `;
+                queueListEl.appendChild(item);
+            });
+
+            countEl.innerText = count;
+
+            if (count === 0) {
+                queueListEl.innerHTML = `<div class="empty-queue"><i class="fas fa-coffee" style="font-size: 24px; margin-bottom:12px; opacity:0.5;"></i><br>Queue is currently empty.</div>`;
+            }
+
+            // Always reset active viewer when queue refreshes
+            hideActiveProfile();
+        }
+
+        // --- 4. PIN VERIFICATION WORKFLOW ---
+        function openPinOverlay(globalIndex, name) {
+            selectedVisitorIndex = globalIndex;
+            document.getElementById("pinOverlay").classList.add("active");
+            document.getElementById("inputPin").value = "";
+            document.getElementById("pinError").style.display = "none";
+            document.getElementById("inputPin").focus();
+        }
+
+        function closePinOverlay() {
+            document.getElementById("pinOverlay").classList.remove("active");
+            selectedVisitorIndex = -1;
+        }
+
+        function submitPin() {
+            const enteredPin = document.getElementById("inputPin").value;
+            const visitor = currentQueue[selectedVisitorIndex];
+
+            if (enteredPin === visitor.pin) {
+                // Success! Unlock dashboard.
+                closePinOverlay();
+                showActiveProfile(visitor);
+            } else {
+                document.getElementById("pinError").style.display = "block";
+                document.getElementById("inputPin").value = "";
+            }
+        }
+
+        // --- 5. PROFILE VIEWER ---
+        function showActiveProfile(visitor) {
+            document.getElementById("noVisitorState").style.display = "none";
+            document.getElementById("activeVisitorState").style.display = "flex";
+
+            document.getElementById("visName").innerText = visitor.name;
+            document.getElementById("visContact").innerText = visitor.contact;
+            document.getElementById("visEmail").innerText = visitor.email;
+            document.getElementById("visPurpose").innerText = visitor.purpose;
+
+            if (visitor.photo) {
+                document.getElementById("visPhoto").src = visitor.photo;
+                document.getElementById("visPhoto").style.display = "block";
+            } else {
+                document.getElementById("visPhoto").style.display = "none";
+            }
+        }
+
+        function hideActiveProfile() {
+            document.getElementById("noVisitorState").style.display = "flex";
+            document.getElementById("activeVisitorState").style.display = "none";
+        }
+
+        // --- 6. ROUTING ACTIONS ---
+        function saveQueueToStorage() {
+            localStorage.setItem("davQueue", JSON.stringify(currentQueue));
+        }
+
+        async function proceedVisitor() {
+            if (selectedVisitorIndex === -1) return;
+            const nextStation = document.getElementById("nextStation").value;
+            if (!nextStation) {
+                alert("Please select a station first.");
+                return;
+            }
+
+            const visitor = currentQueue[selectedVisitorIndex];
+            // Robust PIN extraction because APIs return different key names
+            const pin = visitor.pin || visitor.PIN || visitor.otp || visitor.code || visitor.visitorPin || visitor.id || visitor._id;
+
+            if (!pin) {
+                alert("Critical Error: Missing Visitor PIN from backend payload. Cannot Route.");
+                return;
+            }
+
+            const submitBtn = document.querySelector(".btn-proceed");
+            const origHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Routing...`;
+            submitBtn.disabled = true;
+
+            try {
+                // Update the backend path array
+                const response = await fetch(`https://1ccf-2409-40d1-149f-2398-2534-f9a2-4cab-d141.ngrok-free.app/api/visitors/path/${pin}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' },
+                    body: JSON.stringify({ location: nextStation })
+                });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(`Server returned ${response.status}: ${errText}`);
+                }
+
+                // Reset elite select display
+                const display = document.getElementById("nextStationDisplay");
+                display.innerText = "Select Next Station...";
+                display.style.color = "var(--text-main)";
+                document.getElementById("nextStation").value = "";
+
+                alert(`Visitor routed to ${nextStation} Queue successfully.`);
+                selectedVisitorIndex = -1;
+
+                // Triggers an API fetch to sync UI with backend strictly
+                await renderQueue();
+            } catch (error) {
+                console.error("Routing error:", error);
+                alert("Could not update the visitor routing path on the server.\n" + error.message);
+            } finally {
+                submitBtn.innerHTML = origHtml;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function exitVisitor() {
+            if (selectedVisitorIndex === -1) return;
+
+            if (confirm("Are you sure you want to EXIT this visitor from campus? They will be removed from all queues.")) {
+
+                const visitor = currentQueue[selectedVisitorIndex];
+                const pin = visitor.pin;
+
+                try {
+                    // Update backend status to COMPLETED
+                    await fetch(`https://1ccf-2409-40d1-149f-2398-2534-f9a2-4cab-d141.ngrok-free.app/api/visitors/status/${pin}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' },
+                        body: JSON.stringify({ status: "COMPLETED" })
+                    });
+                } catch (e) {
+                    console.warn("API status update failed, continuing with local cleanup.");
+                }
+
+                // Remove from local array totally
+                currentQueue.splice(selectedVisitorIndex, 1);
+                saveQueueToStorage();
+
+                alert("Visitor Exit complete.");
+                selectedVisitorIndex = -1;
+                renderQueue();
+            }
+        }
+    </script>
+</body>
+
+</html>

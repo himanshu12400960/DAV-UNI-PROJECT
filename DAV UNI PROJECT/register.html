@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAV UniVisitor - Register</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&family=Great+Vibes&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ─── RESET & ROOT ──────────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            /* DAV Brand – DAVU.png + davuniversity.org */
+            --red: #CC0000;
+            --maroon: #8B1A1A;
+            --maroon-light: #A82828;
+            --gold: #B8882A;
+            --gold-light: #D4A84B;
+
+            /* Surface */
+            --bg: #F9F6F3;
+            --panel-bg: rgba(255, 253, 250, 0.85);
+            --panel-border: rgba(139, 26, 26, 0.11);
+
+            /* Text */
+            --text-main: #1A1210;
+            --text-muted: #6A5D58;
+
+            --transition: 0.28s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+            /* Compatibility */
+            --blue-main: var(--maroon);
+            --blue-accent: var(--gold);
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: linear-gradient(-45deg, #F9F6F3, #FDF8F0, #F9F6F3, #F5F1EE);
+            background-size: 400% 400%;
+            animation: ambientGradient 15s ease infinite;
+            position: relative;
+        }
+
+        /* Ambient background orbs */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            z-index: 0;
+            filter: blur(100px);
+            opacity: 0.2;
+            animation: floatOrbs 20s infinite ease-in-out alternate;
+            pointer-events: none;
+        }
+
+        body::before {
+            background: rgba(139, 26, 26, 0.12);
+            /* Maroon */
+            top: -150px;
+            left: -100px;
+        }
+
+        body::after {
+            background: rgba(184, 136, 42, 0.1);
+            /* Gold */
+            bottom: -150px;
+            right: -100px;
+            animation-delay: -10s;
+        }
+
+        @keyframes ambientGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes floatOrbs {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(120px, 150px) scale(1.15);
+            }
+        }
+
+        /* ─── NAV ────────────────────────────────────────────────── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 48px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid var(--panel-border);
+            box-shadow: 0 1px 20px rgba(123, 26, 26, 0.06);
+        }
+
+        /* Logo pair in nav */
+        .nav-logos {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-logos img {
+            display: block;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .nav-logos .logo-crest {
+            width: clamp(38px, 6vw, 54px);
+            filter: drop-shadow(0 2px 6px rgba(139, 26, 26, 0.15));
+        }
+
+        .nav-logos .logo-text {
+            width: clamp(110px, 18vw, 170px);
+            max-height: 44px;
+        }
+
+        .nav-logo-divider {
+            width: 1px;
+            height: 32px;
+            background: var(--panel-border);
+            flex-shrink: 0;
+        }
+
+        .nav-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            font-weight: 500;
+            background: rgba(123, 26, 26, 0.07);
+            padding: 6px 14px;
+            border-radius: 100px;
+            border: 1px solid var(--panel-border);
+            letter-spacing: 0.01em;
+        }
+
+        .nav-badge .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22C55E;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+        }
+
+        /* ─── LAYOUT & HERO ─────────────────────────────────── */
+        .layout {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+            animation: slideUp 0.4s ease-out both;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .hero h1 {
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 700;
+            color: var(--maroon);
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 15.5px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ─── CONTAINER & FORM ──────────────────────────────── */
+        .container {
+            width: 100%;
+            background: var(--panel-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--panel-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .container h2 {
+            margin-bottom: 24px;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        form input,
+        form textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--text-main);
+            font-size: 14.5px;
+            outline: none;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        form input::placeholder,
+        form textarea::placeholder {
+            color: #94A3B8;
+        }
+
+        form input:focus,
+        form textarea:focus {
+            border-color: var(--maroon);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(139, 26, 26, 0.08);
+        }
+
+        /* ─── ELITE SELECT ───────────────────────────────────────── */
+        .elite-select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .elite-select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--panel-border);
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--text-main);
+            font-size: 14.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .elite-select:hover {
+            border-color: var(--maroon);
+            background: #fff;
+        }
+
+        .elite-select.open {
+            border-color: var(--maroon);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(139, 26, 26, 0.08);
+        }
+
+        .elite-select::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238B1A1A'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
+            transition: 0.3s;
+        }
+
+        .elite-select.open::after {
+            transform: rotate(180deg);
+        }
+
+        .elite-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 10px 40px rgba(139, 26, 26, 0.12);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 1000;
+        }
+
+        .elite-options.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .elite-option {
+            padding: 12px 16px;
+            font-size: 14.5px;
+            color: var(--text-main);
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .elite-option:hover {
+            background: rgba(139, 26, 26, 0.05);
+            color: var(--maroon);
+            padding-left: 20px;
+        }
+
+        .elite-option.selected {
+            background: var(--maroon);
+            color: #fff;
+        }
+
+        form select.hidden-select {
+            display: none;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[type="file"] {
+            padding: 12px;
+            background: rgba(139, 26, 26, 0.03);
+            border: 1px dashed var(--panel-border);
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        input[type="file"]:hover {
+            background: #fff;
+            border-color: var(--maroon);
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 16px 20px;
+            margin-top: 16px;
+            background: var(--maroon);
+            border: none;
+            color: #fff;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(139, 26, 26, 0.2);
+        }
+
+        button.submit-btn:hover {
+            background: var(--maroon-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 26, 26, 0.3);
+        }
+
+        /* ─── POPUP ─────────────────────────────────────────── */
+        .popup {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        .popup-content {
+            background: #ffffff;
+            padding: 32px 40px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.3s ease-out;
+            border: 1px solid var(--panel-border);
+        }
+
+        .popup-content h3 {
+            color: #34D399;
+            margin-bottom: 12px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .popup-content p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 14.5px;
+            line-height: 1.5;
+        }
+
+        .popup-content button {
+            background: rgba(139, 26, 26, 0.1);
+            color: var(--maroon);
+            border: 1px solid var(--panel-border);
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .popup-content button:hover {
+            background: rgba(139, 26, 26, 0.15);
+            border-color: var(--maroon);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @media(max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                padding: 16px 20px;
+            }
+
+            .layout {
+                padding: 24px 16px;
+            }
+
+            .container {
+                width: 100%;
+                background: var(--panel-bg);
+                padding: 40px;
+                border-radius: 20px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+                border: 1px solid var(--panel-border);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                position: relative;
+                z-index: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="nav-logos">
+            <img src="https://davuniversity.org/src2/img/basic/logohead.png?v=1" class="logo-crest" alt="DAV Crest">
+            <div class="nav-logo-divider"></div>
+            <img src="https://davuniversity.org/src2/img/basic/DAVU.png?v=1" class="logo-text" alt="DAV University">
+        </div>
+        <div class="nav-badge">
+            <span class="dot"></span>
+            DAV UniVisitor
+        </div>
+    </nav>
+
+    <main class="layout">
+        <section class="hero">
+            <h1>Welcome to DAV University</h1>
+            <p>Register your visit for campus tours, admissions, meetings, and events using our seamless registration
+                portal.</p>
+        </section>
+
+        <div class="container">
+            <h2>Visitor Registration Form</h2>
+
+            <form id="registerForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" placeholder="e.g. Nikhil Malhotra" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" placeholder="e.g. nikhil@example.com" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Home City/Address *</label>
+                        <input type="text" placeholder="e.g. Jalandhar, Punjab" id="address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">Contact Number *</label>
+                        <input type="tel" placeholder="e.g. 9876543210" id="contact" required>
+                    </div>
+
+                    <!-- MODERIZED ELITE SELECT -->
+                    <div class="form-group full-width">
+                        <label>Purpose of Visit</label>
+                        <div class="elite-select-wrapper">
+                            <div class="elite-select" id="purposeDisplay" onclick="toggleEliteSelect('purposeOptions')">
+                                Select Purpose...
+                            </div>
+                            <div class="elite-options" id="purposeOptions">
+                                <div class="elite-option"
+                                    onclick="selectEliteOption('purpose', 'Meeting / Staff Interaction', 'Meeting / Staff Interaction', 'purposeDisplay', 'purposeOptions')">
+                                    Meeting / Staff Interaction</div>
+                                <div class="elite-option"
+                                    onclick="selectEliteOption('purpose', 'Admission Inquiry', 'Admission Inquiry', 'purposeDisplay', 'purposeOptions')">
+                                    Admission Inquiry</div>
+                                <div class="elite-option"
+                                    onclick="selectEliteOption('purpose', 'University Event / Seminar', 'University Event / Seminar', 'purposeDisplay', 'purposeOptions')">
+                                    University Event / Seminar</div>
+                                <div class="elite-option"
+                                    onclick="selectEliteOption('purpose', 'Other', 'Other', 'purposeDisplay', 'purposeOptions')">
+                                    Other</div>
+                            </div>
+                            <select id="purpose" class="hidden-select" name="purpose" required>
+                                <option value="">Select Purpose...</option>
+                                <option value="Meeting / Staff Interaction">Meeting / Staff Interaction</option>
+                                <option value="Admission Inquiry">Admission Inquiry</option>
+                                <option value="University Event / Seminar">University Event / Seminar</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group full-width">
+                        <label for="description">Additional Notes / Description *</label>
+                        <textarea placeholder="Please provide brief details about your visit" id="description"
+                            required></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Live Photo Capture *</label>
+
+                        <div
+                            style="border: 1px solid var(--panel-border); border-radius: 8px; padding: 16px; background: rgba(255,255,255,0.7); text-align: center; margin-bottom: 12px;">
+                            <button type="button" id="startCamBtn"
+                                style="background:var(--maroon); color:white; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; font-size:15px; cursor:pointer;"
+                                onclick="startCamera()"><i class="fas fa-camera"></i> Open Camera</button>
+                            <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">A live photo is required
+                                for the digital pass.</p>
+                        </div>
+
+                        <!-- Live Camera Feed (Hidden by default) -->
+                        <div id="cameraSetup"
+                            style="display:none; text-align: center; background: #E2E8F0; padding: 12px; border-radius: 12px; margin-bottom: 12px;">
+                            <video id="videoFeed" width="100%"
+                                style="border-radius: 8px; background: black; max-width:400px; display:block; margin: 0 auto;"
+                                autoplay playsinline></video>
+                            <button type="button"
+                                style="margin-top:12px; background:#10B981; color:white; border:none; padding:10px 24px; border-radius:8px; font-weight:bold; cursor:pointer;"
+                                onclick="snapPhoto()"><i class="fas fa-camera"></i> Capture Snap</button>
+                            <button type="button"
+                                style="margin-top:12px; background:#EF4444; color:white; border:none; padding:10px 24px; border-radius:8px; font-weight:bold; cursor:pointer; margin-left: 8px;"
+                                onclick="stopCamera()">Cancel</button>
+                        </div>
+
+                        <!-- Frozen Snapshot Preview -->
+                        <canvas id="canvasPreview"
+                            style="display:none; border-radius: 8px; border: 2px solid var(--maroon); width:100%; max-width:400px; margin: 0 auto; margin-bottom: 12px;"></canvas>
+
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Registration</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- RECENT REGISTRATIONS -->
+    <section style="position:relative;z-index:1;max-width:800px;margin:0 auto 60px;padding:0 20px;">
+        <div
+            style="background:var(--panel-bg);border:1px solid var(--panel-border);border-radius:16px;padding:28px 32px;backdrop-filter:blur(16px);">
+            <h3
+                style="font-size:16px;font-weight:600;color:var(--maroon);margin-bottom:18px;display:flex;align-items:center;gap:10px;">
+                <i class="fas fa-clock-rotate-left"></i> Recent Registrations
+            </h3>
+            <div id="recentEntriesList">
+                <p style="color:var(--text-muted);font-size:14px;">No registrations yet.</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h3><i class="fas fa-check-circle"></i> Registration Successful!</h3>
+            <p>Your details have been submitted securely. Please provide your digital Security PIN to the faculty when
+                called.</p>
+            <div
+                style="background: rgba(139, 26, 26, 0.05); padding: 16px; border-radius: 8px; margin: 16px 0; border: 1px solid rgba(139, 26, 26, 0.1);">
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 4px;">Your Security PIN</p>
+                <h2 id="generatedPinDisplay"
+                    style="font-size: 32px; letter-spacing: 4px; color: var(--maroon); margin: 0;">----</h2>
+            </div>
+            <button onclick="window.location.href='index.html'"
+                style="background:var(--maroon); color:white; padding:12px 24px; border:none; border-radius:8px; width:100%; font-size:16px; font-weight:bold; cursor:pointer;"><i
+                    class="fas fa-robot"></i> Proceed to AI Guide</button>
+        </div>
+    </div>
+
+    <script>
+        // ── ELITE SELECT LOGIC ──────────────────────────────────────
+        function toggleEliteSelect(id) {
+            const menu = document.getElementById(id);
+            const trigger = menu.previousElementSibling;
+            const isOpen = menu.classList.contains('show');
+
+            // Close all other dropdowns
+            document.querySelectorAll('.elite-options').forEach(o => o.classList.remove('show'));
+            document.querySelectorAll('.elite-select').forEach(o => o.classList.remove('open'));
+
+            if (!isOpen) {
+                menu.classList.add('show');
+                trigger.classList.add('open');
+            }
+        }
+
+        function selectEliteOption(hiddenId, val, text, displayId, menuId) {
+            document.getElementById(hiddenId).value = val;
+            const display = document.getElementById(displayId);
+            display.innerText = text;
+            display.style.color = "var(--maroon)";
+            display.style.fontWeight = "600";
+
+            document.getElementById(menuId).classList.remove('show');
+            display.classList.remove('open');
+        }
+
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.elite-select-wrapper')) {
+                document.querySelectorAll('.elite-options').forEach(o => o.classList.remove('show'));
+                document.querySelectorAll('.elite-select').forEach(o => o.classList.remove('open'));
+            }
+        });
+
+        // CAMERA STATE GLOBALS
+        let liveStream = null;
+        let capturedBlob = null;
+
+        function clearCam() {
+            capturedBlob = null;
+            document.getElementById("canvasPreview").style.display = "none";
+        }
+
+        async function startCamera() {
+            const video = document.getElementById("videoFeed");
+            document.getElementById("cameraSetup").style.display = "block";
+            document.getElementById("canvasPreview").style.display = "none";
+            capturedBlob = null; // reset if they restart cam
+
+            try {
+                liveStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = liveStream;
+            } catch (err) {
+                alert("Camera access denied or unavailable.");
+                document.getElementById("cameraSetup").style.display = "none";
+            }
+        }
+
+        function snapPhoto() {
+            const video = document.getElementById("videoFeed");
+            const canvas = document.getElementById("canvasPreview");
+            const context = canvas.getContext("2d");
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Generate standard binary Blob from canvas to mirror standard File upload
+            canvas.toBlob((blob) => {
+                capturedBlob = blob;
+            }, "image/jpeg", 0.9);
+
+            stopCamera();
+            canvas.style.display = "block"; // Show preview
+        }
+
+        function stopCamera() {
+            if (liveStream) {
+                liveStream.getTracks().forEach(track => track.stop());
+                liveStream = null;
+            }
+            document.getElementById("cameraSetup").style.display = "none";
+        }
+
+        const form = document.getElementById("registerForm");
+        const popup = document.getElementById("popup");
+
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const address = document.getElementById("address").value.trim();
+            const contact = document.getElementById("contact").value.trim();
+            const purpose = document.getElementById("purpose").value;
+            const description = document.getElementById("description").value;
+
+            if (name === "" || email === "" || contact === "") {
+                alert("Please fill all required fields!");
+                return;
+            }
+
+            // 1. Email Validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+
+            // 2. Phone Validation
+            const phoneRegex = /^\d{10}$/;
+            if (!phoneRegex.test(contact)) {
+                alert("Please enter a valid 10-digit phone number.");
+                return;
+            }
+
+            // 3. Image Validation
+            if (!capturedBlob) {
+                alert("Please click a live photo first!");
+                return;
+            }
+
+            // Loading state
+            const submitBtn = form.querySelector(".submit-btn");
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Submitting...`;
+
+            // Setup API
+            const NODE_API_URL = "  https://1ccf-2409-40d1-149f-2398-2534-f9a2-4cab-d141.ngrok-free.app/api/visitors/register";
+
+            try {
+                const canvas = document.getElementById("canvasPreview");
+                const base64DataUrl = canvas.toDataURL("image/jpeg");
+
+                const fd = new FormData();
+                fd.append("name", name);
+                fd.append("email", email);
+                fd.append("address", address);
+                fd.append("contact", contact);
+                fd.append("purpose", purpose);
+                fd.append("description", description);
+                fd.append("photo", capturedBlob, "webcam_snap.jpg");
+
+                const response = await fetch(NODE_API_URL, { method: "POST", body: fd });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(`Server error ${response.status}: ${errText}`);
+                }
+
+                const data = await response.json();
+                console.log("✅ API Response:", data);
+
+                // Robust PIN Extraction
+                const findPin = (obj) => {
+                    if (!obj || typeof obj !== 'object') return null;
+                    for (const key of ["pin", "PIN", "visitorPin", "otp", "code"]) {
+                        if (obj[key]) return String(obj[key]);
+                    }
+                    for (const key in obj) {
+                        if (typeof obj[key] === 'object') {
+                            const deep = findPin(obj[key]);
+                            if (deep) return deep;
+                        }
+                    }
+                    return null;
+                };
+
+                let finalPin = findPin(data);
+                if (!finalPin || String(finalPin).length < 4) {
+                    finalPin = String(Math.floor(100000 + Math.random() * 900000));
+                }
+
+                let apiId = data.id || data._id || data.data?.id || data.data?._id || data.visitor?.id || data.visitor?._id || Date.now().toString();
+
+                // Save to Queue
+                const queueItem = {
+                    name, email, address, contact, purpose, description,
+                    photo: base64DataUrl,
+                    id: String(apiId),
+                    pin: finalPin,
+                    currentStation: "Reception",
+                    timestamp: new Date().toISOString()
+                };
+
+                let queue = [];
+                try { queue = JSON.parse(localStorage.getItem("davQueue") || "[]"); } catch (e) { }
+                queue.push(queueItem);
+                localStorage.setItem("davQueue", JSON.stringify(queue));
+                localStorage.setItem("activeVisitorPin", finalPin);
+
+                // Success Popup
+                document.getElementById("generatedPinDisplay").innerText = finalPin;
+                popup.style.display = "flex";
+                renderRecentEntries();
+
+            } catch (error) {
+                console.error("Registration failed:", error);
+                submitBtn.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Registration Failed`;
+                submitBtn.style.background = "#EF4444";
+
+                alert("Could not connect to the registration server. Please check your connection.");
+            } finally {
+                submitBtn.disabled = false;
+                if (!submitBtn.style.background.includes("EF4444")) {
+                    submitBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Registration`;
+                }
+            }
+        });
+
+        function closePopup() {
+            popup.style.display = "none";
+            form.reset();
+            // Reset Elite selects display
+            document.getElementById("purposeDisplay").innerText = "Select Purpose...";
+        }
+
+        function renderRecentEntries() {
+            const container = document.getElementById("recentEntriesList");
+            if (!container) return;
+
+            let queue = [];
+            try { queue = JSON.parse(localStorage.getItem("davQueue") || "[]"); } catch (e) { }
+
+            const last5 = queue.slice(-5).reverse();
+
+            if (last5.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-muted);font-size:14px;">No registrations yet.</p>`;
+                return;
+            }
+
+            container.innerHTML = last5.map((v, i) => `
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;background:${i % 2 === 0 ? 'rgba(139,26,26,0.04)' : 'transparent'};border:1px solid ${i % 2 === 0 ? 'rgba(139,26,26,0.1)' : 'transparent'};margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div style="width:36px;height:36px;border-radius:50%;background:rgba(139,26,26,0.1);display:flex;align-items:center;justify-content:center;color:var(--maroon);font-size:14px;font-weight:700;">
+                            ${(v.name || '?')[0].toUpperCase()}
+                        </div>
+                        <span style="font-weight:600;font-size:15px;color:var(--text-main);">${v.name || 'Unknown'}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;background:rgba(139,26,26,0.08);padding:6px 14px;border-radius:20px;">
+                        <i class="fas fa-key" style="font-size:11px;color:var(--maroon);"></i>
+                        <span style="font-family:monospace;font-size:16px;font-weight:700;letter-spacing:3px;color:var(--maroon);">${v.pin || '——'}</span>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        renderRecentEntries();
+
+    </script>
+
+</body>
+
+</html>
