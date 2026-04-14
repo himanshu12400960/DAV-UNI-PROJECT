@@ -942,6 +942,7 @@
        CHATBOT ENGINE – FAQ data from davuniversity.org
        ═══════════════════════════════════════════════════════ -->
     <script>
+        const API_BASE_URL = "https://8753-2401-4900-8313-c936-41c5-c010-b9e7-a044.ngrok-free.app";
 
         // ── KNOWLEDGE BASE ────────────────────────────────────────────
         const faqs = [
@@ -1343,7 +1344,7 @@
                 clearInterval(pollInterval);
 
                 // Update backend status to EXPIRED using PATCH
-                fetch(`https://e8ff-2401-4900-858a-ff8c-794e-14a5-6da9-adeb.ngrok-free.app/api/visitors/status/${activePin}`, {
+                fetch(`${API_BASE_URL}/api/visitors/status/${activePin}`, {
                     method: "PATCH",
                     headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '69420' },
                     body: JSON.stringify({ status: "EXPIRED" })
@@ -1372,7 +1373,7 @@
         async function pollVisitorPath() {
             if (!activePin) return;
             try {
-                const response = await fetch(`https://e8ff-2401-4900-858a-ff8c-794e-14a5-6da9-adeb.ngrok-free.app/api/visitors/pin/${activePin}`, {
+                const response = await fetch(`${API_BASE_URL}/api/visitors/pin/${activePin}`, {
                     headers: { 'ngrok-skip-browser-warning': '69420' }
                 });
                 if (response.ok) {
@@ -1446,7 +1447,7 @@
             if (chatAuthState === "AWAITING_PIN") {
                 const pin = question.trim();
                 try {
-                    const response = await fetch(`https://e8ff-2401-4900-858a-ff8c-794e-14a5-6da9-adeb.ngrok-free.app/api/visitors/pin/${pin}`, {
+                    const response = await fetch(`${API_BASE_URL}/api/visitors/pin/${pin}`, {
                         headers: {
                             'ngrok-skip-browser-warning': '69420'
                         }
@@ -1483,19 +1484,35 @@
 
             // 2. Handle RAG API / Knowledge Base
             try {
-                const API_URL = "http://10.248.23.176:3000/api/rag/ask";
+                const API_URL = `${API_BASE_URL}/api/rag/ask`;
 
                 const response = await fetch(API_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: question })
+                    headers: {
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "69420"
+                    },
+                    // Send both keys in case old vs new backend implementations differ
+                    body: JSON.stringify({ message: question, question: question })
                 });
 
                 if (!response.ok) throw new Error("API not reachable");
 
-                const data = await response.json();
+                const contentType = response.headers.get("content-type");
+                let answerText = "";
+                let url = null;
+
+                if (contentType && contentType.includes("application/json")) {
+                    const data = await response.json();
+                    answerText = data.answer || data.reply || data.message || "I'm not sure.";
+                    url = data.url || null;
+                } else {
+                    // Backend streams text instead of returning JSON
+                    answerText = await response.text();
+                }
+
                 removeTyping();
-                addBotMessage(data.answer || data.reply || data.message || "I'm not sure.", data.url || null);
+                addBotMessage(answerText || "I'm not sure.", url);
 
             } catch (error) {
                 console.warn("NodeJS API disconnected. Falling back to local knowledge base.", error);
@@ -1515,6 +1532,8 @@
         function findBestMatch(question) {
             const q = normalize(question);
             const qWords = q.split(/\s+/);
+            const stopWords = ["is", "the", "of", "and", "a", "to", "in", "it", "can", "i", "for", "how", "what", "where", "are", "you", "my", "me", "do", "does", "on", "at", "about", "hi", "hello", "hey", "tell", "ask"];
+
             let bestScore = -1, bestFaq = null;
 
             faqs.forEach(faq => {
@@ -1522,30 +1541,42 @@
 
                 // 1. Keyword hits (high weight)
                 faq.keywords.forEach(kw => {
-                    if (q.includes(normalize(kw))) score += 8;
+                    const normKw = normalize(kw);
+                    if (new RegExp(`\\b${normKw}\\b`).test(q)) {
+                        if (stopWords.includes(normKw)) {
+                            score += 1; // Demote generic stop words
+                        } else {
+                            score += 8;
+                        }
+                    }
                 });
 
                 // 2. Question variant matching
                 faq.question_variants.forEach(variant => {
                     const vNorm = normalize(variant);
                     if (q === vNorm) { score += 20; return; }
-                    if (q.includes(vNorm) || vNorm.includes(q)) { score += 12; return; }
+
+                    const qRegex = new RegExp(`\\b${q}\\b`);
+                    const vRegex = new RegExp(`\\b${vNorm}\\b`);
+
+                    if (vRegex.test(q) || (q.length > 3 && qRegex.test(vNorm))) { score += 12; return; }
+
                     const vWords = vNorm.split(/\s+/);
-                    const common = qWords.filter(w => w.length > 2 && vWords.includes(w));
+                    const common = qWords.filter(w => w.length > 2 && !stopWords.includes(w) && vWords.includes(w));
                     score += common.length * 3;
                 });
 
                 // 3. Intent name match
-                if (q.includes(normalize(faq.intent))) score += 6;
+                if (new RegExp(`\\b${normalize(faq.intent)}\\b`).test(q)) score += 6;
 
                 // 4. Category match
-                if (q.includes(normalize(faq.category))) score += 4;
+                if (new RegExp(`\\b${normalize(faq.category)}\\b`).test(q)) score += 4;
 
                 if (score > bestScore) { bestScore = score; bestFaq = faq; }
             });
 
-            // Fallback
-            if (bestScore < 3 || !bestFaq) {
+            // Adjust threshold to filter out low-confidence random guesses
+            if (bestScore < 5 || !bestFaq) {
                 return {
                     answer: "I'm not sure about that. Try rephrasing, or contact DAV University directly:<br><b>📞 Toll-Free: 1800-1800-190</b><br>Or visit the <a href='https://davuniversity.org/' target='_blank' style='color:#4A90E2'>official website →</a>",
                     url: 'https://davuniversity.org/'
