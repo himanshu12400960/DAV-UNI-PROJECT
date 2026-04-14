@@ -414,6 +414,34 @@
             box-shadow: 0 4px 24px rgba(123, 26, 26, 0.07);
         }
 
+        .map-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+            padding: 12px 24px;
+            background: var(--maroon);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(139, 26, 26, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .map-action-btn:hover {
+            background: var(--maroon-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 26, 26, 0.3);
+        }
+
+        .map-action-btn i {
+            font-size: 16px;
+            color: var(--gold);
+        }
+
         /* ─── FOOTER ────────────────────────────────────────────── */
         footer {
             text-align: center;
@@ -880,6 +908,10 @@
             src="https://maps.google.com/maps?q=DAV%20University%20Jalandhar&t=&z=15&ie=UTF8&iwloc=&output=embed"
             allowfullscreen loading="lazy" title="DAV University Location">
         </iframe>
+        <a href="https://www.google.com/maps/search/?api=1&query=DAV+University+Jalandhar" target="_blank"
+            class="map-action-btn">
+            <i class="fas fa-directions"></i> Open in Google Maps App
+        </a>
     </section>
 
     <footer>
@@ -964,7 +996,7 @@
                     "Located on NH 44 (Jalandhar-Pathankot Highway). Nearest bus stop at the university main gate. University bus service also connects Jalandhar city."
                 ],
                 keywords: ["location", "direction", "reach", "address", "where", "highway", "nh44", "distance"],
-                url: "https://davuniversity.org/"
+                url: "https://www.google.com/maps/search/?api=1&query=DAV+University+Jalandhar"
             },
             {
                 intent: "admission_cell", category: "navigation",
