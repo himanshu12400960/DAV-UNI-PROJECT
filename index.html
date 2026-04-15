@@ -976,299 +976,7 @@
     <script>
         const API_BASE_URL = "https://8753-2401-4900-8313-c936-41c5-c010-b9e7-a044.ngrok-free.app";
 
-        // ── KNOWLEDGE BASE ────────────────────────────────────────────
-        const faqs = [
-            {
-                intent: "general", category: "general",
-                question_variants: ["What is DAV University?", "Tell me about DAV University", "About DAV", "What kind of university is DAV?"],
-                answers: [
-                    "DAV University is a private multidisciplinary university in Jalandhar, Punjab (est. 2012). UGC-recognised, it offers UG, PG, doctoral, and diploma programmes in Engineering, Sciences, Commerce, Law, Agriculture, Pharmacy, Education, and more.",
-                    "DAV University is on Jalandhar-Pathankot Highway. It follows NEP 2020 and has industry tie-ups with SAP, L&T EduTech, and IIT Mandi for cutting-edge programmes."
-                ],
-                keywords: ["about", "info", "university", "dav", "overview", "introduction", "what is"],
-                url: "https://davuniversity.org/university/introduction"
-            },
-            {
-                intent: "location", category: "navigation",
-                question_variants: ["Where is DAV University?", "How to reach DAV University?", "Directions to DAV?", "Address of DAV University?", "DAV address?"],
-                answers: [
-                    "DAV University is on Jalandhar-Pathankot National Highway (NH 44), Sarmastpur, Jalandhar, Punjab – 144012. About 10 km from Jalandhar city centre.",
-                    "Located on NH 44 (Jalandhar-Pathankot Highway). Nearest bus stop at the university main gate. University bus service also connects Jalandhar city."
-                ],
-                keywords: ["location", "direction", "reach", "address", "where", "highway", "nh44", "distance"],
-                url: "https://www.google.com/maps/search/?api=1&query=DAV+University+Jalandhar"
-            },
-            {
-                intent: "admission_cell", category: "navigation",
-                question_variants: ["Where is the admission cell?", "Where is the admission office?", "Admission cell location?", "Where to go for admission?", "Admission kahan hai?", "Where to submit form?", "Where is admission department?"],
-                answers: [
-                    "The Admission Cell is in the Administrative Block (ground floor) on campus. From the main gate, follow the signboards to the Admin Block — it's the first building you'll see.",
-                    "The Admission Office is inside the Administrative Block, open on all working days (Mon–Sat). You can apply online at admission.davuniversity.org and visit the cell for document verification and counselling."
-                ],
-                keywords: ["admission cell", "admission office", "where admission", "submit form", "cell", "admin block admission"],
-                url: "https://admission.davuniversity.org/index2023.aspx"
-            },
-            {
-                intent: "admission_process", category: "admission",
-                question_variants: ["How to apply for admission?", "Admission process?", "What is the process of admission?", "How can I get admission?", "Step by step admission?", "Admission procedure?", "Admission kaise hoti hai?", "How to take admission in DAV?"],
-                answers: [
-                    "Step-by-step Admission Process: ① Visit admission.davuniversity.org and Register. ② Fill the online application form and select your programme. ③ Pay the registration fee at cca.davupay.com. ④ Download the Admission Guide for eligibility. ⑤ Appear for entrance exam or submit merit (varies by programme). ⑥ Attend counselling & document verification at the Admission Cell. ⑦ Pay semester fee to confirm your seat.",
-                    "To apply online: Go to admission.davuniversity.org → Click 'Apply Now' → Register → Fill form → Pay registration fee. Admission is merit or entrance-based depending on course. Download the Admission Guide PDF for full eligibility details."
-                ],
-                keywords: ["admission", "apply", "process", "how", "step", "register", "form", "procedure", "admission process", "take admission"],
-                url: "https://admission.davuniversity.org/index2023.aspx"
-            },
-            {
-                intent: "apply_online", category: "admission",
-                question_variants: ["How to apply online?", "Online admission portal?", "Apply link?", "Admission portal?", "Online form?", "Apply now link?"],
-                answers: [
-                    "Apply online at: admission.davuniversity.org → Click 'Apply Now' → Register → Fill your details → Choose programme → Pay registration fee.",
-                    "Admission portal: admission.davuniversity.org. New users: click 'Apply Now'. Existing users: click 'Login'. Pay registration fee at cca.davupay.com."
-                ],
-                keywords: ["apply online", "portal", "online form", "registration link", "apply now", "admission link"],
-                url: "https://admission.davuniversity.org/index2023.aspx"
-            },
-            {
-                intent: "ug_courses", category: "admission",
-                question_variants: ["What UG courses are available?", "Bachelor programmes?", "Undergraduate courses?", "What can I study?", "B.Tech available?", "UG list?", "Courses list?", "Programs offered?"],
-                answers: [
-                    "UG Programmes at DAV: Engineering – B.Tech CSE, CS & AI, Mechanical, Civil, Electrical, Mechatronics (EV). Science – B.Sc Physics, Chemistry, Maths, Botany, Zoology, Microbiology, Biotechnology, Food Science. Commerce – BBA, B.Com, BBA Logistics. Law – B.A.LL.B (Hons). Agriculture – B.Sc (Hons) Agriculture. Pharmacy – B.Pharm. Others – BCA, B.Sc CS, BA English, BA Journalism & Mass Communication.",
-                    "25+ Bachelor's programmes: B.Tech CSE, B.Tech CS & AI (with SAP), BCA, BBA, B.Com, B.A.LL.B, B.Pharm, B.Sc Agriculture, BA Journalism. Industry-integrated programmes with SAP and L&T EduTech also available."
-                ],
-                keywords: ["courses", "programs", "ug", "bachelor", "btech", "bca", "bba", "bsc", "bcom", "undergraduate", "what courses", "course list"],
-                url: "https://davuniversity.org/"
-            },
-            {
-                intent: "pg_courses", category: "admission",
-                question_variants: ["What PG courses are available?", "Masters programmes?", "Postgraduate courses?", "MBA at DAV?", "MCA at DAV?", "M.Tech?", "PG list?"],
-                answers: [
-                    "PG Programmes: Engineering – M.Tech CSE, Mechanical, Electrical, Structural. CS – MCA, M.Sc CS. Sciences – M.Sc Physics, Chemistry, Maths, Botany, Zoology, Microbiology, Biotechnology. Commerce – MBA, M.Com. Law – LL.M. Agriculture – M.Sc Agriculture (multiple specialisations). Humanities – MA English, MA Psychology.",
-                    "20+ PG programmes including MBA (with SAP specialisation), MCA (with SAP), M.Tech in 4 branches, LL.M, MA English/Psychology, M.Sc Sciences, M.Sc Agriculture. Check davuniversity.org for the full list."
-                ],
-                keywords: ["pg", "master", "mtech", "mba", "mca", "postgraduate", "llm", "msc", "mcom", "pg courses", "masters"],
-                url: "https://davuniversity.org/"
-            },
-            {
-                intent: "phd", category: "research",
-                question_variants: ["Is PhD available?", "Doctoral programmes?", "PhD admission?", "Research degree?", "Doctor of Philosophy?", "PhD at DAV?"],
-                answers: [
-                    "PhD (full-time & part-time) available in Engineering (CSE, Mechanical, Civil, Electrical), Sciences (Physics, Chemistry, Maths, Biotech, Microbiology, Zoology, Botany), Commerce, Law, Psychology, English, and Agriculture. Visit davuniversity.org/study-choice/doctoral-programmes.",
-                    "PhD is offered in 15+ disciplines. Both full-time and part-time options available. Research published in Scopus-indexed journals. Innovation & Entrepreneurship lab also available."
-                ],
-                keywords: ["phd", "doctoral", "research", "doctorate", "philosophy"],
-                url: "https://davuniversity.org/study-choice/doctoral-programmes"
-            },
-            {
-                intent: "fees", category: "admission",
-                question_variants: ["What are the fees?", "Fee structure?", "Course fees?", "Tuition fees?", "How much does it cost?", "Fees kitni hai?", "Fee 2025?"],
-                answers: [
-                    "Fees vary by programme. Official Fee Structure for 2025-26 (new batch) PDF: davuniversity.org/src/library/2025/Fee_Installments-New-batch-2025-26.pdf. Pay fees online at davuniversity.org/uni/fee-payment.",
-                    "Detailed fee structure for all programmes is in the Notices section of the official website. Hostel and Transport fees are listed separately. Use online payment portal at davuniversity.org/uni/fee-payment."
-                ],
-                keywords: ["fees", "fee structure", "cost", "tuition", "charges", "fee 2025", "how much"],
-                url: "https://davuniversity.org/src/library/2025/Fee_Installments-New-batch-2025-26.pdf"
-            },
-            {
-                intent: "scholarship", category: "admission",
-                question_variants: ["Are scholarships available?", "Scholarship details?", "Financial aid?", "Scholarship kaise milti hai?", "Merit scholarship?"],
-                answers: [
-                    "DAV University offers scholarships based on academic merit, sports achievements, and economic background. Details: davuniversity.org/innerpage/scholarships.",
-                    "Scholarships for meritorious students, sports achievers, and economically weaker sections (EWS). Check eligibility criteria and apply via the Scholarships page on the official website."
-                ],
-                keywords: ["scholarship", "financial aid", "merit", "fee waiver", "financial help"],
-                url: "https://davuniversity.org/innerpage/scholarships"
-            },
-            {
-                intent: "hostel", category: "facilities",
-                question_variants: ["Is hostel available?", "Hostel facility?", "Boys hostel?", "Girls hostel?", "Hostel process?", "How to get hostel room?", "Hostel admission?", "What is the process of hostel facilities?", "Hostel fees?", "Hostel allotment?"],
-                answers: [
-                    "Hostel Process at DAV: ① Confirm your admission. ② Visit the Hostel Administration Office (on campus). ③ Fill the hostel allotment form. ④ Pay the hostel fee as per 2025-26 structure (PDF at davuniversity.org/src/library/2025/2-Hostel-fee-2025-26-16-5-25.pdf). ⑤ Room is allotted on merit/first-come basis. Separate, fully equipped hostels for boys and girls.",
-                    "Hostel is available for boys and girls separately. After admission confirmation → visit Hostel Office → fill form → pay hostel fee → get room allotted. Meals and modern amenities included. Contact the hostel warden for current vacancy information."
-                ],
-                keywords: ["hostel", "boys hostel", "girls hostel", "accommodation", "room", "warden", "hostel fee", "hostel process", "hostel allotment"],
-                url: "https://davuniversity.org/src/library/2025/2-Hostel-fee-2025-26-16-5-25.pdf"
-            },
-            {
-                intent: "transport", category: "transport",
-                question_variants: ["Is transport available?", "Bus facility?", "Transport process?", "How to avail bus?", "What is the transport process?", "Bus routes?", "Transport fees?", "Bus pass?", "How to get bus pass?", "Bus from Jalandhar?"],
-                answers: [
-                    "University Transport Process: ① Visit the Transport Office (near Admin Block on campus). ② Check bus routes available for your area. ③ Fill the transport registration form. ④ Pay the transport fee (2025-26 PDF: davuniversity.org/src/library/2025/Transpot_fee_2025-2026.pdf). ⑤ Your bus pass and timings are shared after registration. Buses cover Jalandhar city and nearby areas.",
-                    "To avail university bus: Visit Transport Office on campus → check routes → register → pay fee → get bus pass. Call the helpline 1800-1800-190 for current route information and timings."
-                ],
-                keywords: ["transport", "bus", "bus routes", "transport fee", "shuttle", "bus pass", "transport process", "jalandhar bus"],
-                url: "https://davuniversity.org/src/library/2025/Transpot_fee_2025-2026.pdf"
-            },
-            {
-                intent: "canteen", category: "facilities",
-                question_variants: ["Is there a canteen?", "Food facilities?", "Where can I eat?", "Cafeteria available?", "Food on campus?"],
-                answers: [
-                    "Campus has a fully operational canteen and cafeteria with multiple food stalls. Breakfast, lunch, snacks, and dinner available on all working days.",
-                    "The campus canteen serves vegetarian and non-vegetarian food for students, staff, and visitors throughout the day."
-                ],
-                keywords: ["food", "canteen", "cafeteria", "eat", "meal", "snacks"],
-                url: "https://davuniversity.org/"
-            },
-            {
-                intent: "sports", category: "facilities",
-                question_variants: ["Sports facilities?", "Is there a gym?", "Playgrounds?", "Sports activities?", "Fitness centre?"],
-                answers: [
-                    "Sports facilities: cricket ground, football field, basketball court, volleyball court, badminton courts, and a fully equipped gymnasium. B.P.Ed. and B.Sc Health & Physical Education programmes also offered.",
-                    "Well-maintained sports infrastructure on campus including cricket, football, basketball, volleyball, badminton, and a modern gym."
-                ],
-                keywords: ["sports", "gym", "cricket", "football", "basketball", "playground", "fitness", "physical"],
-                url: "https://davuniversity.org/innerpage/department-sports-and-physical-education"
-            },
-            {
-                intent: "library", category: "facilities",
-                question_variants: ["Is there a library?", "Library facility?", "Books and study area?", "Knowledge resource centre?", "Study room?"],
-                answers: [
-                    "DAV University Knowledge Resource Centre (Library) has thousands of books, journals, digital databases, e-resources, and ample study space for students.",
-                    "The library is open during working hours with access to physical books, e-books, research journals, and online databases. Quiet reading zone and computer terminals available."
-                ],
-                keywords: ["library", "books", "study", "knowledge resource", "reading", "journal", "database"],
-                url: "https://davuniversity.org/library/knowledge-resource-centre-library"
-            },
-            {
-                intent: "labs", category: "facilities",
-                question_variants: ["Are labs available?", "Laboratory facilities?", "Research labs?", "Computer labs?", "Science lab?"],
-                answers: [
-                    "Advanced departmental labs for Engineering, Science, Pharmacy, Agriculture, and CS/IT. Research facilities for PhD scholars. Innovation & Entrepreneurship lab also present.",
-                    "State-of-the-art labs in every department. Research publications indexed in Scopus. Innovation lab and entrepreneurship cell also available."
-                ],
-                keywords: ["labs", "laboratory", "research", "computer lab", "science lab", "innovation"],
-                url: "https://davuniversity.org/innovation-entrepreneurship/"
-            },
-            {
-                intent: "parking", category: "navigation",
-                question_variants: ["Where can I park?", "Parking available?", "Visitor parking?", "Bike parking?"],
-                answers: [
-                    "Parking is available inside the campus. Designated two-wheeler and four-wheeler areas near the main entrance. Visitors park near the main gate.",
-                    "Ample parking space on campus. Students register their vehicle number with security upon entry."
-                ],
-                keywords: ["parking", "park", "vehicle", "bike", "car", "two-wheeler"],
-                url: "https://davuniversity.org/"
-            },
-            {
-                intent: "admin_block", category: "navigation",
-                question_variants: ["Where is admin block?", "Administrative block location?", "Office location?", "Where is registrar?"],
-                answers: [
-                    "The Administrative Block is centrally located on campus. Follow the signboards from the main gate. It houses the Admission Cell, Accounts, Registrar Office, and Student Services.",
-                    "The Admin Block is the main administrative hub — housing Admission Office, Registrar, Finance, and Student Services. Easily accessible from the main gate."
-                ],
-                keywords: ["admin", "admin block", "administrative", "registrar", "office", "main building"],
-                url: "https://davuniversity.org/university/introduction"
-            },
-            {
-                intent: "contact", category: "contact",
-                question_variants: ["Contact number?", "Phone number?", "Helpline?", "Enquiry number?", "Contact DAV?", "Call university?"],
-                answers: [
-                    "DAV University Helpline (Toll-Free): 1800-1800-190. Also use the 'Enquire Now' form at davuniversity.org.",
-                    "Contact: Toll-Free 1800-1800-190 | Website: davuniversity.org | 'Enquire Now' button on homepage for online enquiries."
-                ],
-                keywords: ["contact", "helpline", "phone", "number", "enquiry", "call", "toll free"],
-                url: "https://davuniversity.org/"
-            },
-            {
-                intent: "email", category: "contact",
-                question_variants: ["Email address?", "Official email?", "How to email DAV?", "University email?"],
-                answers: [
-                    "Use the official 'Enquire Now' form at davuniversity.org for email queries. For admissions, contact via admission.davuniversity.org.",
-                    "Department-specific emails are listed on the Contact Us page at davuniversity.org. For admission queries use the admission portal."
-                ],
-                keywords: ["email", "mail", "enquire", "official email"],
-                url: "https://davuniversity.org/"
-            },
-            {
-                intent: "visitor", category: "visitor",
-                question_variants: ["Can visitors enter?", "Visitor rules?", "Is campus open?", "Campus visit?", "Can I visit at 3PM?"],
-                answers: [
-                    "Visitors are allowed on campus during working hours. A valid photo ID is required at the main gate security. Parents and prospective students are welcome for campus tours.",
-                    "Campus is open on working days for visitors. Register at gate security with a photo ID. Prior appointment recommended for official visits."
-                ],
-                keywords: ["visitor", "visit", "entry", "gate", "parents", "open", "campus tour"],
-                url: "https://davuniversity.org/"
-            },
-            {
-                intent: "wifi", category: "facilities",
-                question_variants: ["Is WiFi available?", "Internet facility?", "Campus internet?", "High speed internet?", "WiFi in hostel?"],
-                answers: [
-                    "High-speed WiFi is available campus-wide — classrooms, hostels, library, and common areas. Student credentials provided after enrolment.",
-                    "The entire campus is Wi-Fi enabled. Students access the campus network with ID/password credentials issued at the time of admission."
-                ],
-                keywords: ["wifi", "internet", "network", "broadband", "wireless"],
-                url: "https://davuniversity.org/"
-            },
-            {
-                intent: "events", category: "student_life",
-                question_variants: ["Events in university?", "Fest?", "Cultural events?", "Student activities?", "NCC NSS?", "Clubs?"],
-                answers: [
-                    "DAV University hosts cultural fests, technical symposiums, sports meets, inter-university competitions, NCC, NSS, and club activities throughout the year.",
-                    "Annual fests, technical events, and extracurricular activities are regularly organised. Details at davuniversity.org/innerpage/events-dav."
-                ],
-                keywords: ["events", "fest", "cultural", "sports meet", "ncc", "nss", "activities", "clubs", "co-curricular"],
-                url: "https://davuniversity.org/innerpage/events-dav"
-            },
-            {
-                intent: "placements", category: "career",
-                question_variants: ["Placement details?", "Job opportunities?", "Campus placement?", "Which companies recruit?", "Placement record?", "Does DAV have placements?"],
-                answers: [
-                    "DAV University's active Placement Cell facilitates campus recruitment from IT, management, engineering, and pharma sectors. Check current openings at davuniversity.org/uni/jobs-and-career.",
-                    "Placement support includes resume writing, mock interviews, and group discussion training. Top companies from various industries visit campus regularly for recruitment."
-                ],
-                keywords: ["placement", "job", "career", "recruitment", "company", "recruiter", "campus placement"],
-                url: "https://davuniversity.org/uni/jobs-and-career"
-            },
-            {
-                intent: "fee_payment", category: "admission",
-                question_variants: ["How to pay fees?", "Fee payment portal?", "Pay fees online?", "Pay semester fees?", "Online payment?"],
-                answers: [
-                    "Pay fees online at: davuniversity.org/uni/fee-payment — semester fees, hostel fees, and registration fees via net banking, debit/credit card, or UPI.",
-                    "Online fee payment portal: davuniversity.org/uni/fee-payment. Keep the payment receipt for your records. Fee structure PDF available at official website."
-                ],
-                keywords: ["fee payment", "pay fees", "online payment", "semester fee", "fee portal", "upi"],
-                url: "https://davuniversity.org/uni/fee-payment"
-            },
-            {
-                intent: "result", category: "academics",
-                question_variants: ["How to check result?", "Exam result?", "Result portal?", "Where to see marks?", "Datesheet?", "Result kaise dekhe?"],
-                answers: [
-                    "Check exam results at: davupay.com/frmViewStudentResult.aspx — Enter your roll number to view your result.",
-                    "Results are published at davupay.com/frmViewStudentResult.aspx. Reappear exam date sheets are in the Notices section on davuniversity.org."
-                ],
-                keywords: ["result", "exam result", "marks", "grade", "datesheet", "roll number"],
-                url: "https://www.davupay.com/frmViewStudentResult.aspx"
-            },
-            {
-                intent: "nep", category: "academics",
-                question_variants: ["What is NEP 2020?", "NEP policy at DAV?", "New education policy?", "Flexible degree?", "Multiple exit options?", "Modular system?"],
-                answers: [
-                    "DAV follows NEP 2020 with a modular credit system offering multiple entry/exit options: Certificate after 1 year, Diploma after 2 years, Degree after 3-4 years. Students earn credits based on performance.",
-                    "Under NEP 2020, DAV offers interdisciplinary learning, modular credits, and flexibility to exit with a certificate or diploma. IIT Mandi minor programmes in AI, Data Science also available."
-                ],
-                keywords: ["nep", "national education policy", "modular", "credits", "exit", "flexible", "nep 2020"],
-                url: "https://davuniversity.org/innerpage/nep.aspx"
-            },
-            {
-                intent: "sap_programme", category: "academics",
-                question_variants: ["SAP programme?", "Industry integrated course?", "B.Tech with SAP?", "MBA with SAP?", "SAP certification?", "ERP course?", "SAP at DAV?"],
-                answers: [
-                    "Industry-integrated SAP programmes at DAV: B.Tech CSE (Cloud ERP with SAP), MCA with SAP specialisation, MBA with SAP specialisation. Students earn SAP certification alongside their degree. Brochure: davuniversity.org/src/library/2025/DAV_University-SAP-Programme-Brochure.pdf",
-                    "B.Tech CSE (Cloud ERP with SAP), MCA (SAP), and MBA (SAP) are unique programmes giving hands-on enterprise software experience and SAP certification — a big advantage for IT careers."
-                ],
-                keywords: ["sap", "erp", "cloud", "industry integrated", "sap certification", "sap programme", "enterprise"],
-                url: "https://davuniversity.org/src/library/2025/DAV_University-SAP-Programme-Brochure.pdf"
-            },
-            {
-                intent: "iit_mandi", category: "academics",
-                question_variants: ["IIT Mandi collaboration?", "Minor in AI?", "Minor in data science?", "Minor at DAV?", "IIT collaboration?", "Data science minor?", "Business analytics minor?"],
-                answers: [
-                    "DAV University collaborates with IIT Mandi offering Minor programmes in Artificial Intelligence, Data Science, Business Analytics, and CSE & Advanced Technologies. Brochure: davuniversity.org/src/library/2025/IIT_Mandi.pdf",
-                    "Through the IIT Mandi tie-up, students can pursue Minor specialisations in AI, Data Science, Business Analytics, and CSE — a unique, industry-aligned academic advantage."
-                ],
-                keywords: ["iit mandi", "minor", "ai minor", "data science", "business analytics", "iit", "collaboration"],
-                url: "https://davuniversity.org/src/library/2025/IIT_Mandi.pdf"
-            }
-        ];
+
 
         // ── CHAT ENGINE ──────────────────────────────────────────────
 
@@ -1514,7 +1222,19 @@
                 return;
             }
 
-            // 2. Handle RAG API / Knowledge Base
+            // 2. Intercept VC / Chancellor queries
+            const qLower = question.toLowerCase();
+            if (/\b(vc|vice\s*chancellor|chancellor|kulpati|kul\s*pati)\b/.test(qLower)) {
+                removeTyping();
+                if (/\b(vc|vice\s*chancellor)\b/.test(qLower)) {
+                    addBotMessage("The <b>Vice Chancellor (VC)</b> of DAV University is <b>Prof. Dr. Manoj Kumar</b>.", "https://davuniversity.org/university/introduction");
+                } else {
+                    addBotMessage("The <b>Chancellor</b> of DAV University is <b>Dr. Punam Suri</b>.", "https://davuniversity.org/university/introduction");
+                }
+                return;
+            }
+
+            // 3. Handle RAG API / Knowledge Base
             try {
                 const API_URL = `${API_BASE_URL}/api/rag/ask`;
 
@@ -1547,78 +1267,13 @@
                 addBotMessage(answerText || "I'm not sure.", url);
 
             } catch (error) {
-                console.warn("NodeJS API disconnected. Falling back to local knowledge base.", error);
-                setTimeout(() => {
-                    removeTyping();
-                    const result = findBestMatch(question);
-                    addBotMessage(result.answer, result.url);
-                }, 300);
+                console.warn("API connection error.", error);
+                removeTyping();
+                addBotMessage("<b>Connection Error.</b><br>The server is currently unreachable. Please try again in a moment, or contact DAV University directly:<br><b>📞 Toll-Free: 1800-1800-190</b><br>Or visit the <a href='https://davuniversity.org/' target='_blank' style='color:var(--maroon)'>official website →</a>", 'https://davuniversity.org/');
             }
         }
 
-        // ── MATCHING ENGINE ───────────────────────────────────────────
-        function normalize(str) {
-            return str.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim();
-        }
 
-        function findBestMatch(question) {
-            const q = normalize(question);
-            const qWords = q.split(/\s+/);
-            const stopWords = ["is", "the", "of", "and", "a", "to", "in", "it", "can", "i", "for", "how", "what", "where", "are", "you", "my", "me", "do", "does", "on", "at", "about", "hi", "hello", "hey", "tell", "ask"];
-
-            let bestScore = -1, bestFaq = null;
-
-            faqs.forEach(faq => {
-                let score = 0;
-
-                // 1. Keyword hits (high weight)
-                faq.keywords.forEach(kw => {
-                    const normKw = normalize(kw);
-                    if (new RegExp(`\\b${normKw}\\b`).test(q)) {
-                        if (stopWords.includes(normKw)) {
-                            score += 1; // Demote generic stop words
-                        } else {
-                            score += 8;
-                        }
-                    }
-                });
-
-                // 2. Question variant matching
-                faq.question_variants.forEach(variant => {
-                    const vNorm = normalize(variant);
-                    if (q === vNorm) { score += 20; return; }
-
-                    const qRegex = new RegExp(`\\b${q}\\b`);
-                    const vRegex = new RegExp(`\\b${vNorm}\\b`);
-
-                    if (vRegex.test(q) || (q.length > 3 && qRegex.test(vNorm))) { score += 12; return; }
-
-                    const vWords = vNorm.split(/\s+/);
-                    const common = qWords.filter(w => w.length > 2 && !stopWords.includes(w) && vWords.includes(w));
-                    score += common.length * 3;
-                });
-
-                // 3. Intent name match
-                if (new RegExp(`\\b${normalize(faq.intent)}\\b`).test(q)) score += 6;
-
-                // 4. Category match
-                if (new RegExp(`\\b${normalize(faq.category)}\\b`).test(q)) score += 4;
-
-                if (score > bestScore) { bestScore = score; bestFaq = faq; }
-            });
-
-            // Adjust threshold to filter out low-confidence random guesses
-            if (bestScore < 5 || !bestFaq) {
-                return {
-                    answer: "I'm not sure about that. Try rephrasing, or contact DAV University directly:<br><b>📞 Toll-Free: 1800-1800-190</b><br>Or visit the <a href='https://davuniversity.org/' target='_blank' style='color:#4A90E2'>official website →</a>",
-                    url: 'https://davuniversity.org/'
-                };
-            }
-
-            const answers = bestFaq.answers;
-            const answer = answers[Math.floor(Math.random() * answers.length)];
-            return { answer, url: bestFaq.url };
-        }
 
         // ── DOM HELPERS ───────────────────────────────────────────────
         function addUserMessage(text) {

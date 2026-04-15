@@ -147,7 +147,8 @@
         }
 
         .password-wrapper input {
-            padding-right: 48px; /* Room for the eye icon */
+            padding-right: 48px;
+            /* Room for the eye icon */
         }
 
         .toggle-password {
@@ -579,20 +580,20 @@
                     </div>
                     <div class="sys-status">
                         <span>Registration API</span>
-                        <div class="status-indicator">
-                            <div class="dot-green"></div> Operational
+                        <div class="status-indicator" id="apiStatusText">
+                            <div id="healthApi" class="dot-green"></div> Operational
                         </div>
                     </div>
                     <div class="sys-status">
                         <span>Chatbot Engine</span>
-                        <div class="status-indicator">
-                            <div class="dot-green"></div> Operational
+                        <div class="status-indicator" id="botStatusText">
+                            <div id="healthBot" class="dot-green"></div> Operational
                         </div>
                     </div>
                     <div class="sys-status">
                         <span>Database Stream</span>
-                        <div class="status-indicator">
-                            <div class="dot-green"></div> Synced
+                        <div class="status-indicator" id="dbStatusText">
+                            <div id="healthDb" class="dot-green"></div> Synced
                         </div>
                     </div>
                 </div>
@@ -635,25 +636,56 @@
 
         // ── DATA ENGINE ──
         let allVisitors = [];
-        const API_URL = "http://10.248.23.176:3000/api/visitors";
+        const API_URL = "https://1ccf-2409-40d1-149f-2398-2534-f9a2-4cab-d141.ngrok-free.app/api/visitors/";
 
         async function loadData() {
             try {
-                const response = await fetch(API_URL);
+                const response = await fetch(API_URL, {
+                    headers: {
+                        'ngrok-skip-browser-warning': '69420'
+                    }
+                });
                 if (response.ok) {
-                    allVisitors = await response.json();
+                    const data = await response.json();
+
+                    // Handle wrapped responses (e.g., { data: [...] } or { visitors: [...] })
+                    let list = data;
+                    if (data.data) list = data.data;
+                    if (data.visitors) list = data.visitors;
+
+                    allVisitors = Array.isArray(list) ? list : [];
                     console.log("🚀 Data fetched from backend:", allVisitors);
+
+                    updateHealthUI(true);
                     // Update localStorage as a cache/backup
                     localStorage.setItem('davQueue', JSON.stringify(allVisitors));
                 } else {
-                    console.warn("Backend response not OK, using localStorage fallback");
-                    const raw = localStorage.getItem('davQueue');
-                    allVisitors = raw ? JSON.parse(raw) : [];
+                    throw new Error("API responded with error status");
                 }
             } catch (e) {
                 console.error("Backend connection failed, using localStorage fallback", e);
+                updateHealthUI(false);
                 const raw = localStorage.getItem('davQueue');
                 allVisitors = raw ? JSON.parse(raw) : [];
+            }
+        }
+
+        function updateHealthUI(isOnline) {
+            const apiDot = document.getElementById('healthApi');
+            const apiText = document.getElementById('apiStatusText');
+            const dbDot = document.getElementById('healthDb');
+            const dbText = document.getElementById('dbStatusText');
+
+            if (isOnline) {
+                apiDot.style.background = "#10B981";
+                apiText.innerHTML = '<div id="healthApi" class="dot-green" style="background:#10B981"></div> Operational';
+                dbDot.style.background = "#10B981";
+                dbText.innerHTML = '<div id="healthDb" class="dot-green" style="background:#10B981"></div> Synced';
+            } else {
+                apiDot.style.background = "#EF4444";
+                apiText.innerHTML = '<div id="healthApi" class="dot-green" style="background:#EF4444"></div> Disconnected';
+                dbDot.style.background = "#F59E0B";
+                dbText.innerHTML = '<div id="healthDb" class="dot-green" style="background:#F59E0B"></div> Offline Cache';
             }
         }
 
@@ -680,14 +712,20 @@
         function updateStats() {
             document.getElementById('totalCount').innerText = allVisitors.length;
 
-            // Active count (simulated logic based on stations)
-            document.getElementById('activeCount').innerText = allVisitors.length; // Simplified for MVP
-
-            // Find top station
-            const counts = {};
-            allVisitors.forEach(v => {
-                counts[v.currentStation] = (counts[v.currentStation] || 0) + 1;
+            // Active count (Visitors whose status is not COMPLETED or EXITED)
+            const activeVisitors = allVisitors.filter(v => {
+                const s = (v.status || "PENDING").toUpperCase();
+                return s !== "COMPLETED" && s !== "EXITED";
             });
+            document.getElementById('activeCount').innerText = activeVisitors.length;
+
+            // Find top station (Current Load)
+            const counts = {};
+            activeVisitors.forEach(v => {
+                const st = v.currentStation || "Reception";
+                counts[st] = (counts[st] || 0) + 1;
+            });
+
             let top = "None";
             let topVal = 0;
             for (let st in counts) {
@@ -738,8 +776,14 @@
 
             const departments = ["Reception", "Admission Cell", "Document Verification", "Counselling", "Accounts", "Hostel Warden"];
             const counts = {};
+
+            // Only count active visitors for departmental load
             allVisitors.forEach(v => {
-                counts[v.currentStation] = (counts[v.currentStation] || 0) + 1;
+                const s = (v.status || "PENDING").toUpperCase();
+                if (s !== "COMPLETED" && s !== "EXITED") {
+                    const st = v.currentStation || "Reception";
+                    counts[st] = (counts[st] || 0) + 1;
+                }
             });
 
             departments.forEach(dept => {
