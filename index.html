@@ -974,7 +974,7 @@
        CHATBOT ENGINE – FAQ data from davuniversity.org
        ═══════════════════════════════════════════════════════ -->
     <script>
-        const API_BASE_URL = "https://8753-2401-4900-8313-c936-41c5-c010-b9e7-a044.ngrok-free.app";
+        const API_BASE_URL = "https://3e77-2409-40d1-100f-e478-e825-6609-8a59-4b77.ngrok-free.app";
 
 
 
@@ -1017,7 +1017,7 @@
             if (!chatOpen) toggleChat();
 
             setTimeout(() => {
-                addBotMessage(`Welcome to the DAV University AI Portal! 🎓<br><br><b>Please enter your 6-digit security PIN</b> to authenticate your session and receive your custom campus routing path.`);
+                addBotMessage(`Welcome to the DAV University AI Portal! 🎓<br><br><b>Please enter your 11-digit security PIN</b> to authenticate your session and receive your custom campus routing path.`);
             }, 500);
         }
 
@@ -1186,6 +1186,12 @@
             // 1. Handle Conversational Authentication
             if (chatAuthState === "AWAITING_PIN") {
                 const pin = question.trim();
+                // Validate: must be exactly 11 digits
+                if (!/^\d{11}$/.test(pin)) {
+                    removeTyping();
+                    addBotMessage(`<b>Invalid PIN format.</b><br>Please enter a valid <b>11-digit</b> numeric PIN. You entered ${pin.length} character(s).`, null);
+                    return;
+                }
                 try {
                     const response = await fetch(`${API_BASE_URL}/api/visitors/pin/${pin}`, {
                         headers: {
