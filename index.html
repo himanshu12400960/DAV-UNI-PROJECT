@@ -1146,13 +1146,22 @@
             }
             lastStation = currentLoc;
 
-            if (visitor.expiresAt) {
-                visitorExpiresAt = new Date(visitor.expiresAt).getTime();
-                if (!isNaN(visitorExpiresAt)) {
-                    chatTimerInterval = setInterval(updateTimerUI, 1000);
-                    updateTimerUI();
-                }
+            // PIN is valid only from 9:30 AM to 4:30 PM today
+            const now = new Date();
+            const todayStart = new Date(now);
+            todayStart.setHours(9, 30, 0, 0); // 9:30 AM
+            const todayEnd = new Date(now);
+            todayEnd.setHours(16, 30, 0, 0);  // 4:30 PM
+
+            if (now < todayStart || now >= todayEnd) {
+                // Outside valid hours – treat as expired
+                visitorExpiresAt = Date.now() - 1; // force expired state
+            } else {
+                // Use 4:30 PM today as the expiry regardless of backend expiresAt
+                visitorExpiresAt = todayEnd.getTime();
             }
+            chatTimerInterval = setInterval(updateTimerUI, 1000);
+            updateTimerUI();
             pollInterval = setInterval(pollVisitorPath, 5000);
         }
 
